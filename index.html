@@ -21,7 +21,7 @@
     <!-- Header Dashboard -->
     <header class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
         <div class="flex items-center space-x-4 mb-4 md:mb-0">
-	<img alt="logo-satkom" src="https://www.satkomindo.com/assets/logo-satkomindo-all-white-g0N1bGTk.png" class="h-12">
+            <img alt="logo-satkom" src="https://www.satkomindo.com/assets/logo-satkomindo-all-white-g0N1bGTk.png" class="h-12">
             <h1 class="text-3xl md:text-4xl font-extrabold">SMS Notifikasi Satkomindo</h1>
         </div>
         <!-- Kontainer waktu terakhir diperbarui di sisi kanan -->
@@ -86,7 +86,7 @@
         <!-- Stat Card 6: ACK Not Acknowledged -->
         <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-yellow-50 text-yellow-600">
             <div class="flex items-center space-x-3 mb-2">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-yellow-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-yellow-600">
                     <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">Not Acknowledged</p>
@@ -110,6 +110,19 @@
             
             <!-- Dropdown dan tombol -->
             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 p-1 bg-gray-100 rounded-xl shadow-inner">
+                <!-- Tombol filter agregator baru -->
+                <button data-filter-aggregator="all" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 bg-blue-600 text-white shadow-md">
+                    Semua
+                </button>
+                <button data-filter-aggregator="MDM" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                    MDM
+                </button>
+                <button data-filter-aggregator="GNX" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                    GNX
+                </button>
+                <button data-filter-aggregator="MKA" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                    MKA
+                </button>
                 <select id="time-range-select" class="py-2 px-3 rounded-lg text-gray-800 bg-white shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="24">24h - now</option>
                     <option value="6">6h - now</option>
@@ -138,6 +151,13 @@
         <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-6 items-center">
             <input type="text" id="search-id-input" placeholder="Cari Message ID..." class="w-full sm:w-1/3 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
             <input type="text" id="search-number-input" placeholder="Cari MSISDN..." class="w-full sm:w-1/3 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
+            <!-- Filter agregator untuk tabel -->
+            <select id="aggregator-filter-select" class="w-full sm:w-auto p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="all">Semua Agregator</option>
+                <option value="MDM">MDM</option>
+                <option value="GNX">GNX</option>
+                <option value="MKA">MKA</option>
+            </select>
         </div>
         
         <div class="overflow-x-auto">
@@ -150,6 +170,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu ACK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status DR</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agregator</th>
                     </tr>
                 </thead>
                 <tbody id="sms-table-body" class="bg-white divide-y divide-gray-200">
@@ -189,6 +210,7 @@
             const generateMockTableData = (count) => {
                 const data = [];
                 const now = new Date();
+                const aggregators = ['MDM', 'GNX', 'MKA'];
                 for (let i = 0; i < count; i++) {
                     const time = new Date(now.getTime() - i * 15 * 60 * 1000);
                     let statusACK;
@@ -215,6 +237,7 @@
                         timeDR: (statusDR === 'PENDING') ? 'N/A' : time.toLocaleString('id-ID', { hour12: false }),
                         statusACK: statusACK,
                         timeACK: statusACK === 'N/A' ? 'N/A' : new Date(time.getTime() + 1 * 60 * 1000).toLocaleString('id-ID', { hour12: false }),
+                        aggregator: aggregators[Math.floor(Math.random() * aggregators.length)]
                     });
                 }
                 return data;
@@ -226,6 +249,7 @@
             let currentPage = 1;
             const rowsPerPage = 10;
             let filteredTableData = [...mockTableData]; // Salinan data yang akan difilter
+            let currentAggregatorFilter = 'all';
 
             // Fungsi untuk merender tabel
             const renderTable = (page) => {
@@ -242,10 +266,13 @@
 
                     // Mengubah kelas untuk status SUKSES
                     const statusDrClass = sms.statusDR === 'SUKSES' ? 'bg-green-100 text-green-800' :
-                                          sms.statusDR === 'FAILED' ? 'bg-red-100 text-red-800' :
-                                          sms.statusDR === 'REJECT' ? 'bg-gray-300 text-gray-800' : 'bg-yellow-100 text-yellow-800';
+                                             sms.statusDR === 'FAILED' ? 'bg-red-100 text-red-800' :
+                                             sms.statusDR === 'REJECT' ? 'bg-gray-300 text-gray-800' : 'bg-yellow-100 text-yellow-800';
                     const statusAckClass = sms.statusACK === 'ACKNOWLEDGED' ? 'bg-blue-100 text-blue-800' :
-                                           sms.statusACK === 'NOT ACKNOWLEDGED' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800';
+                                               sms.statusACK === 'NOT ACKNOWLEDGED' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800';
+                    const aggregatorClass = sms.aggregator === 'MDM' ? 'bg-purple-100 text-purple-800' :
+                                            sms.aggregator === 'GNX' ? 'bg-orange-100 text-orange-800' :
+                                            'bg-teal-100 text-teal-800';
 
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${sms.id}</td>
@@ -258,6 +285,9 @@
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusDrClass}">${sms.statusDR}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${sms.timeDR}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${aggregatorClass}">${sms.aggregator}</span>
+                        </td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -280,16 +310,19 @@
             // Logika pencarian
             const searchIdInput = document.getElementById('search-id-input');
             const searchNumberInput = document.getElementById('search-number-input');
+            const aggregatorFilterSelect = document.getElementById('aggregator-filter-select');
 
             const filterTable = () => {
                 const searchId = searchIdInput.value.toLowerCase();
                 const searchNumber = searchNumberInput.value.toLowerCase();
+                const aggregatorFilter = aggregatorFilterSelect.value;
 
-                // Filter data berdasarkan kedua input
+                // Filter data berdasarkan semua input
                 filteredTableData = mockTableData.filter(item => {
                     const idMatch = item.id.toLowerCase().includes(searchId);
                     const numberMatch = item.number.toLowerCase().includes(searchNumber);
-                    return idMatch && numberMatch;
+                    const aggregatorMatch = aggregatorFilter === 'all' || item.aggregator === aggregatorFilter;
+                    return idMatch && numberMatch && aggregatorMatch;
                 });
                 
                 // Reset ke halaman pertama dan render ulang tabel dan pagination
@@ -298,9 +331,10 @@
                 renderPagination();
             };
 
-            // Event listener untuk input pencarian
+            // Event listener untuk input pencarian dan filter
             searchIdInput.addEventListener('input', filterTable);
             searchNumberInput.addEventListener('input', filterTable);
+            aggregatorFilterSelect.addEventListener('change', filterTable);
 
             // Mengisi data ringkasan statistik
             document.getElementById('total-sms').textContent = mockSummaryData.totalSms.toLocaleString();
@@ -318,22 +352,62 @@
                 for (let i = 0; i < hours; i++) {
                     const time = new Date(startOfPeriod.getTime() + i * 60 * 60 * 1000);
                     const hour = time.getHours();
+                    const minute = time.getMinutes();
+                    const seconds = time.getSeconds();
 
-                    const sukses = Math.floor(Math.random() * 100) + 50;
-                    const failed = Math.floor(Math.random() * 10);
-                    const rejected = Math.floor(Math.random() * 8);
-                    const pendingDR = Math.floor(Math.random() * 20);
-                    const acknowledged = Math.floor(sukses * (0.8 + Math.random() * 0.2));
-                    const notAcknowledged = sukses - acknowledged;
+                    const suksesMDM = Math.floor(Math.random() * 50) + 10;
+                    const failedMDM = Math.floor(Math.random() * 5);
+                    const rejectedMDM = Math.floor(Math.random() * 3);
+                    const pendingDRMDM = Math.floor(Math.random() * 10);
+                    const acknowledgedMDM = Math.floor(suksesMDM * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedMDM = suksesMDM - acknowledgedMDM;
+
+                    const suksesGNX = Math.floor(Math.random() * 50) + 10;
+                    const failedGNX = Math.floor(Math.random() * 5);
+                    const rejectedGNX = Math.floor(Math.random() * 3);
+                    const pendingDRGNX = Math.floor(Math.random() * 10);
+                    const acknowledgedGNX = Math.floor(suksesGNX * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedGNX = suksesGNX - acknowledgedGNX;
+
+                    const suksesMKA = Math.floor(Math.random() * 50) + 10;
+                    const failedMKA = Math.floor(Math.random() * 5);
+                    const rejectedMKA = Math.floor(Math.random() * 3);
+                    const pendingDRMKA = Math.floor(Math.random() * 10);
+                    const acknowledgedMKA = Math.floor(suksesMKA * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedMKA = suksesMKA - acknowledgedMKA;
 
                     data.push({
                         time: `${String(hour).padStart(2, '0')}:00`,
-                        sukses: sukses,
-                        failed: failed,
-                        rejected: rejected,
-                        pendingDR: pendingDR,
-                        acknowledged: acknowledged,
-                        notAcknowledged: notAcknowledged,
+                        sukses: suksesMDM + suksesGNX + suksesMKA,
+                        failed: failedMDM + failedGNX + failedMKA,
+                        rejected: rejectedMDM + rejectedGNX + rejectedMKA,
+                        pendingDR: pendingDRMDM + pendingDRGNX + pendingDRMKA,
+                        acknowledged: acknowledgedMDM + acknowledgedGNX + acknowledgedMKA,
+                        notAcknowledged: notAcknowledgedMDM + notAcknowledgedGNX + notAcknowledgedMKA,
+                        MDM: {
+                            sukses: suksesMDM,
+                            failed: failedMDM,
+                            rejected: rejectedMDM,
+                            pendingDR: pendingDRMDM,
+                            acknowledged: acknowledgedMDM,
+                            notAcknowledged: notAcknowledgedMDM
+                        },
+                        GNX: {
+                            sukses: suksesGNX,
+                            failed: failedGNX,
+                            rejected: rejectedGNX,
+                            pendingDR: pendingDRGNX,
+                            acknowledged: acknowledgedGNX,
+                            notAcknowledged: notAcknowledgedGNX
+                        },
+                        MKA: {
+                            sukses: suksesMKA,
+                            failed: failedMKA,
+                            rejected: rejectedMKA,
+                            pendingDR: pendingDRMKA,
+                            acknowledged: acknowledgedMKA,
+                            notAcknowledged: notAcknowledgedMKA
+                        }
                     });
                 }
                 return data;
@@ -350,21 +424,59 @@
                     const hour = String(time.getHours()).padStart(2, '0');
                     const minute = String(time.getMinutes()).padStart(2, '0');
 
-                    const sukses = Math.floor(Math.random() * 20) + 10;
-                    const failed = Math.floor(Math.random() * 3);
-                    const rejected = Math.floor(Math.random() * 2);
-                    const pendingDR = Math.floor(Math.random() * 5);
-                    const acknowledged = Math.floor(sukses * (0.8 + Math.random() * 0.2));
-                    const notAcknowledged = sukses - acknowledged;
+                    const suksesMDM = Math.floor(Math.random() * 10) + 5;
+                    const failedMDM = Math.floor(Math.random() * 2);
+                    const rejectedMDM = Math.floor(Math.random() * 1);
+                    const pendingDRMDM = Math.floor(Math.random() * 3);
+                    const acknowledgedMDM = Math.floor(suksesMDM * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedMDM = suksesMDM - acknowledgedMDM;
+
+                    const suksesGNX = Math.floor(Math.random() * 10) + 5;
+                    const failedGNX = Math.floor(Math.random() * 2);
+                    const rejectedGNX = Math.floor(Math.random() * 1);
+                    const pendingDRGNX = Math.floor(Math.random() * 3);
+                    const acknowledgedGNX = Math.floor(suksesGNX * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedGNX = suksesGNX - acknowledgedGNX;
+
+                    const suksesMKA = Math.floor(Math.random() * 10) + 5;
+                    const failedMKA = Math.floor(Math.random() * 2);
+                    const rejectedMKA = Math.floor(Math.random() * 1);
+                    const pendingDRMKA = Math.floor(Math.random() * 3);
+                    const acknowledgedMKA = Math.floor(suksesMKA * (0.8 + Math.random() * 0.2));
+                    const notAcknowledgedMKA = suksesMKA - acknowledgedMKA;
 
                     data.push({
                         time: `${hour}:${minute}`,
-                        sukses: sukses,
-                        failed: failed,
-                        rejected: rejected,
-                        pendingDR: pendingDR,
-                        acknowledged: acknowledged,
-                        notAcknowledged: notAcknowledged,
+                        sukses: suksesMDM + suksesGNX + suksesMKA,
+                        failed: failedMDM + failedGNX + failedMKA,
+                        rejected: rejectedMDM + rejectedGNX + rejectedMKA,
+                        pendingDR: pendingDRMDM + pendingDRGNX + pendingDRMKA,
+                        acknowledged: acknowledgedMDM + acknowledgedGNX + acknowledgedMKA,
+                        notAcknowledged: notAcknowledgedMDM + notAcknowledgedGNX + notAcknowledgedMKA,
+                        MDM: {
+                            sukses: suksesMDM,
+                            failed: failedMDM,
+                            rejected: rejectedMDM,
+                            pendingDR: pendingDRMDM,
+                            acknowledged: acknowledgedMDM,
+                            notAcknowledged: notAcknowledgedMDM
+                        },
+                        GNX: {
+                            sukses: suksesGNX,
+                            failed: failedGNX,
+                            rejected: rejectedGNX,
+                            pendingDR: pendingDRGNX,
+                            acknowledged: acknowledgedGNX,
+                            notAcknowledged: notAcknowledgedGNX
+                        },
+                        MKA: {
+                            sukses: suksesMKA,
+                            failed: failedMKA,
+                            rejected: rejectedMKA,
+                            pendingDR: pendingDRMKA,
+                            acknowledged: acknowledgedMKA,
+                            notAcknowledged: notAcknowledgedMKA
+                        }
                     });
                 }
                 return data;
@@ -373,6 +485,7 @@
             // Logika grafik
             let chartInstance = null;
             let activeChartType = 'dr';
+            let activeAggregatorFilter = 'all'; // Filter agregator default
             const ctx = document.getElementById('sms-line-chart').getContext('2d');
 
             const renderChart = () => {
@@ -382,33 +495,49 @@
                 }
 
                 const value = parseFloat(document.getElementById('time-range-select').value);
-                let chartData;
+                let rawChartData;
                 if (value === 24) {
-                    chartData = generateMockChartDataByHours(24);
+                    rawChartData = generateMockChartDataByHours(24);
                 } else {
                     const minutes = value * 60;
-                    chartData = generateMockChartDataByMinutes(minutes);
+                    rawChartData = generateMockChartDataByMinutes(minutes);
                 }
-
+                
                 let datasets = [];
                 if (activeChartType === 'dr') {
-                    datasets = [
-                        { label: 'Sukses', data: chartData.map(d => d.sukses), borderColor: '#34D399', backgroundColor: 'rgba(52, 211, 153, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                        { label: 'Failed', data: chartData.map(d => d.failed), borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                        { label: 'Reject', data: chartData.map(d => d.rejected), borderColor: '#6B7280', backgroundColor: 'rgba(107, 114, 128, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                        { label: 'Pending DR', data: chartData.map(d => d.pendingDR), borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                    ];
+                    if (activeAggregatorFilter === 'all') {
+                        datasets = [
+                            { label: 'Sukses', data: rawChartData.map(d => d.sukses), borderColor: '#34D399', backgroundColor: 'rgba(52, 211, 153, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Failed', data: rawChartData.map(d => d.failed), borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Reject', data: rawChartData.map(d => d.rejected), borderColor: '#6B7280', backgroundColor: 'rgba(107, 114, 128, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Pending DR', data: rawChartData.map(d => d.pendingDR), borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    } else {
+                        datasets = [
+                            { label: 'Sukses', data: rawChartData.map(d => d[activeAggregatorFilter].sukses), borderColor: '#34D399', backgroundColor: 'rgba(52, 211, 153, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Failed', data: rawChartData.map(d => d[activeAggregatorFilter].failed), borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Reject', data: rawChartData.map(d => d[activeAggregatorFilter].rejected), borderColor: '#6B7280', backgroundColor: 'rgba(107, 114, 128, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Pending DR', data: rawChartData.map(d => d[activeAggregatorFilter].pendingDR), borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    }
                 } else if (activeChartType === 'ack') {
-                    datasets = [
-                        { label: 'Acknowledged', data: chartData.map(d => d.acknowledged), borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                        { label: 'Not Acknowledged', data: chartData.map(d => d.notAcknowledged), borderColor: '#FCA5A5', backgroundColor: 'rgba(252, 165, 165, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                    ];
+                    if (activeAggregatorFilter === 'all') {
+                        datasets = [
+                            { label: 'Acknowledged', data: rawChartData.map(d => d.acknowledged), borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Not Acknowledged', data: rawChartData.map(d => d.notAcknowledged), borderColor: '#FCA5A5', backgroundColor: 'rgba(252, 165, 165, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    } else {
+                        datasets = [
+                            { label: 'Acknowledged', data: rawChartData.map(d => d[activeAggregatorFilter].acknowledged), borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                            { label: 'Not Acknowledged', data: rawChartData.map(d => d[activeAggregatorFilter].notAcknowledged), borderColor: '#FCA5A5', backgroundColor: 'rgba(252, 165, 165, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    }
                 }
 
                 chartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: chartData.map(d => d.time),
+                        labels: rawChartData.map(d => d.time),
                         datasets: datasets
                     },
                     options: {
@@ -440,6 +569,7 @@
             // Logika tombol dan dropdown
             const drBtn = document.getElementById('dr-chart-btn');
             const ackBtn = document.getElementById('ack-chart-btn');
+            const aggregatorButtons = document.querySelectorAll('.aggregator-btn');
             const timeRangeSelect = document.getElementById('time-range-select');
 
             drBtn.addEventListener('click', () => {
@@ -458,6 +588,19 @@
                 ackBtn.classList.remove('text-gray-600', 'hover:bg-white');
                 drBtn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
                 drBtn.classList.add('text-gray-600', 'hover:bg-white');
+            });
+
+            aggregatorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    aggregatorButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                        btn.classList.add('text-gray-600', 'hover:bg-white');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                    button.classList.remove('text-gray-600', 'hover:bg-white');
+                    activeAggregatorFilter = button.getAttribute('data-filter-aggregator');
+                    renderChart();
+                });
             });
 
             timeRangeSelect.addEventListener('change', () => {
@@ -485,8 +628,7 @@
 
             // Tampilkan grafik DR, tabel, dan pagination saat pertama kali halaman dimuat
             renderChart();
-            renderTable(currentPage);
-            renderPagination();
+            filterTable(); // Panggil filterTable untuk merender tabel dan pagination dengan data awal
 
             // Fungsi untuk memperbarui waktu terakhir diperbarui pada header utama
             const updateMainHeaderTime = () => {
@@ -497,16 +639,16 @@
             // Fungsi untuk memperbarui waktu terakhir diperbarui pada header grafik
             const updateChartTime = () => {
                 const now = new Date();
-                document.getElementById('last-updated-chart-time').textContent = now.toLocaleString('id-ID');
+                // document.getElementById('last-updated-chart-time').textContent = now.toLocaleString('id-ID');
             };
 
             // Perbarui waktu saat pertama kali dimuat
             updateMainHeaderTime();
-            updateChartTime();
+            // updateChartTime();
 
             // Perbarui waktu setiap detik
             setInterval(updateMainHeaderTime, 1000);
-            setInterval(updateChartTime, 1000);
+            // setInterval(updateChartTime, 1000);
         });
     </script>
 </body>
