@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,19 +10,23 @@
     <!-- Chart.js CDN untuk grafik -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Font Inter untuk tipografi yang konsisten -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
+
 <body class="bg-gray-50 p-4 md:p-8 text-gray-800">
 
     <!-- Header Dashboard -->
-    <header class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
+    <header
+        class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
         <div class="flex items-center space-x-4 mb-4 md:mb-0">
-            <img alt="logo-satkom" src="https://www.satkomindo.com/assets/logo-satkomindo-all-white-g0N1bGTk.png" class="h-12">
+            <img alt="logo-satkom" src="https://www.satkomindo.com/assets/logo-satkomindo-all-white-g0N1bGTk.png"
+                class="h-12">
             <h1 class="text-3xl md:text-4xl font-extrabold">SMS Notifikasi Satkomindo</h1>
         </div>
         <!-- Kontainer waktu terakhir diperbarui di sisi kanan -->
@@ -32,63 +37,98 @@
     </header>
 
     <!-- Ringkasan Statistik -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-6 mb-8">
         <!-- Stat Card 1: Total SMS -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-white text-gray-800">
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-white text-gray-800">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-black-600">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="h-8 w-8 text-black-600">
+                    <path fill-rule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z"
+                        clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">Total SMS</p>
             </div>
             <p id="total-sms" class="text-4xl font-extrabold"></p>
         </div>
         <!-- Stat Card 2: Sukses -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-green-50 text-green-600">
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-green-50 text-green-600">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-black-600">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="h-8 w-8 text-black-600">
+                    <path fill-rule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z"
+                        clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">SMS Sukses</p>
             </div>
             <p id="sukses-sms" class="text-4xl font-extrabold"></p>
         </div>
         <!-- Stat Card 3: Failed -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-red-50 text-red-600">
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-red-50 text-red-600">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-red-600">
-                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="h-8 w-8 text-red-600">
+                    <path fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                        clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">SMS Failed</p>
             </div>
             <p id="failed-sms" class="text-4xl font-extrabold"></p>
         </div>
         <!-- Stat Card 4: Reject -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-gray-200 text-gray-800">
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-gray-200 text-gray-800">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-gray-600">
-                    <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.75c1.154 2-.241 4.5-2.599 4.5H4.645c-2.358 0-3.753-2.5-2.599-4.5l7.354-12.75ZM12 9a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 12 9Zm0 7.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="h-8 w-8 text-gray-600">
+                    <path fill-rule="evenodd"
+                        d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.75c1.154 2-.241 4.5-2.599 4.5H4.645c-2.358 0-3.753-2.5-2.599-4.5l7.354-12.75ZM12 9a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 12 9Zm0 7.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                        clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">SMS Reject</p>
             </div>
             <p id="rejected-sms" class="text-4xl font-extrabold"></p>
         </div>
-        <!-- Stat Card 5: ACK Acknowledged -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-blue-50 text-blue-600">
+        <!-- Stat Card 5: Pending -->
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-yellow-50 text-yellow-600">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-blue-600">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor"
+                    class="h-8 w-8 text-yellow-600" stroke="white" stroke-width="5">
+                    <circle cx="50" cy="50" r="40" />
+                    <line x1="50" y1="20" x2="50" y2="50" />
+                </svg>
+                <p class="text-xl font-semibold">SMS Pending</p>
+            </div>
+            <p id="pending-sms" class="text-4xl font-extrabold"></p>
+        </div>
+        <!-- Stat Card 6: ACK Acknowledged -->
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-blue-50 text-blue-600">
+            <div class="flex items-center space-x-3 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="h-8 w-8 text-blue-600">
+                    <path fill-rule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.21a.75.75 0 0 0-1.06 1.06l2.031 2.032a.75.75 0 0 0 1.134-.051l3.96-5.632Z"
+                        clip-rule="evenodd" />
                 </svg>
                 <p class="text-xl font-semibold">Acknowledged</p>
             </div>
             <p id="acknowledged-ack" class="text-4xl font-extrabold"></p>
         </div>
-        <!-- Stat Card 6: Average ACK Response Time -->
-        <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-yellow-50 text-yellow-600">
+        <!-- Stat Card 7: Average ACK Response Time -->
+        <div
+            class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-yellow-50 text-yellow-600">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor" class="h-8 w-8 text-yellow-600" stroke="white" stroke-width="5">
-                    <circle cx="50" cy="50" r="40"/>
-  <path d="M50 25V50 H75" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor"
+                    class="h-8 w-8 text-yellow-600" stroke="white" stroke-width="5">
+                    <circle cx="50" cy="50" r="40" />
+                    <path d="M50 25V50 H75" />
                 </svg>
                 <p class="text-xl font-semibold">Avg. Resp. Time</p>
             </div>
@@ -100,38 +140,48 @@
     <section class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <!-- Kontainer judul dan waktu diperbarui -->
-            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 p-1 bg-gray-100 rounded-xl shadow-inner">
-                <button id="dr-chart-btn" class="py-2 px-5 rounded-lg transition-all duration-300 bg-indigo-600 text-white shadow-md">
+            <div
+                class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 p-1 bg-gray-100 rounded-xl shadow-inner">
+                <button id="dr-chart-btn"
+                    class="py-2 px-5 rounded-lg transition-all duration-300 bg-indigo-600 text-white shadow-md">
                     Delivery Report
                 </button>
-                <button id="ack-chart-btn" class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                <button id="ack-chart-btn"
+                    class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     Status ACK
                 </button>
-                <button id="ack-response-time-btn" class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                <button id="ack-response-time-btn"
+                    class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     Respons ACK
                 </button>
             </div>
-            
+
             <!-- Dropdown dan tombol -->
-            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 p-1 bg-gray-100 rounded-xl shadow-inner">
+            <div
+                class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 p-1 bg-gray-100 rounded-xl shadow-inner">
                 <!-- Tombol filter agregator baru -->
-                <button data-filter-aggregator="all" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 bg-blue-600 text-white shadow-md">
+                <button data-filter-aggregator="all"
+                    class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 bg-blue-600 text-white shadow-md">
                     Semua
                 </button>
-                <button data-filter-aggregator="MDM" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                <button data-filter-aggregator="MDM"
+                    class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     MDM
                 </button>
-                <button data-filter-aggregator="GNX" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                <button data-filter-aggregator="GNX"
+                    class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     GNX
                 </button>
-                <button data-filter-aggregator="MKA" class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                <button data-filter-aggregator="MKA"
+                    class="aggregator-btn py-2 px-4 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     MKA
                 </button>
-                <select id="time-range-select" class="py-2 px-3 rounded-lg text-gray-800 bg-white shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="time-range-select"
+                    class="py-2 px-3 rounded-lg text-gray-800 bg-white shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="24">24h - now</option>
                     <option value="6">6h - now</option>
                     <option value="3">3h - now</option>
-                    <option value="1">1h - now</option>
+                    <option value="1" selected>1h - now</option>
                 </select>
             </div>
         </div>
@@ -145,35 +195,56 @@
     <section class="bg-white rounded-3xl shadow-xl p-6 md:p-8">
         <h2 class="text-2xl font-bold flex items-center space-x-2 mb-6">
             <!-- Heroicon SVG -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 text-indigo-600">
-                <path fill-rule="evenodd" d="M3 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75ZM3 10.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75ZM3 15.75a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="h-7 w-7 text-indigo-600">
+                <path fill-rule="evenodd"
+                    d="M3 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75ZM3 10.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75ZM3 15.75a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                    clip-rule="evenodd" />
             </svg>
             <span>Detail SMS Terakhir</span>
         </h2>
-        
+
         <!-- Search Controls -->
         <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-6 items-center">
-            <input type="text" id="search-id-input" placeholder="Cari Message ID..." class="w-full sm:w-1/3 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
-            <input type="text" id="search-number-input" placeholder="Cari MSISDN..." class="w-full sm:w-1/3 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
+            <input type="text" id="search-id-input" placeholder="Cari Message ID..."
+                class="w-full sm:w-1/4 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
+            <input type="text" id="search-number-input" placeholder="Cari MSISDN..."
+                class="w-full sm:w-1/4 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
             <!-- Filter agregator untuk tabel -->
-            <select id="aggregator-filter-select" class="w-full sm:w-auto p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="aggregator-filter-select"
+                class="w-full sm:w-auto p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="all">Semua Agregator</option>
                 <option value="MDM">MDM</option>
                 <option value="GNX">GNX</option>
                 <option value="MKA">MKA</option>
             </select>
+            <!-- Filter status baru untuk tabel -->
+            <select id="status-filter-select"
+                class="w-full sm:w-auto p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="all">Semua Status</option>
+                <option value="SUKSES">Sukses</option>
+                <option value="FAILED">Failed</option>
+                <option value="REJECT">Reject</option>
+                <option value="PENDING">Pending</option>
+            </select>
         </div>
-        
+
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MSISDN</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agregator</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status DR</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status ACK DR</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Respons DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Message ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            MSISDN</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Agregator</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status ACK DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu
+                            Respons ACK DR</th>
                     </tr>
                 </thead>
                 <tbody id="sms-table-body" class="bg-white divide-y divide-gray-200">
@@ -181,16 +252,18 @@
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Kontrol Pagination -->
         <div class="flex items-center justify-between mt-6">
-            <button id="prev-page-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            <button id="prev-page-btn"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
                 Previous
             </button>
             <span id="page-info" class="text-sm font-medium text-gray-500">
                 Page 1 of 1
             </span>
-            <button id="next-page-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            <button id="next-page-btn"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
                 Next
             </button>
         </div>
@@ -223,7 +296,7 @@
                         // Sesuai permintaan: hanya PENDING yang N/A. SUKSES, FAILED, dan REJECT memiliki waktu respons.
                         responseTime = `${generateResponseTime()}s`;
                     }
-                    
+
                     data.push({
                         id: `RPT${123456789 + i}`,
                         number: `0812345678${90 + i}`,
@@ -242,12 +315,12 @@
             let currentPage = 1;
             const rowsPerPage = 10;
             let filteredTableData = [...mockTableData]; // Salinan data yang akan difilter
-            
+
             // Fungsi untuk merender tabel
             const renderTable = (page) => {
                 const tableBody = document.getElementById('sms-table-body');
                 tableBody.innerHTML = ''; // Kosongkan tabel
-                
+
                 const start = (page - 1) * rowsPerPage;
                 const end = start + rowsPerPage;
                 const paginatedData = filteredTableData.slice(start, end);
@@ -258,13 +331,13 @@
 
                     // Mengubah kelas untuk status DR dan ACK
                     const statusDrClass = sms.statusDR === 'SUKSES' ? 'bg-green-100 text-green-800' :
-                                             sms.statusDR === 'FAILED' ? 'bg-red-100 text-red-800' :
-                                             sms.statusDR === 'REJECT' ? 'bg-gray-300 text-gray-800' : 'bg-yellow-100 text-yellow-800';
+                        sms.statusDR === 'FAILED' ? 'bg-red-100 text-red-800' :
+                            sms.statusDR === 'REJECT' ? 'bg-gray-300 text-gray-800' : 'bg-yellow-100 text-yellow-800';
                     const statusAckClass = sms.statusACK === 'ACKNOWLEDGED' ? 'bg-blue-100 text-blue-800' :
-                                               'bg-gray-100 text-gray-800';
+                        'bg-gray-100 text-gray-800';
                     const aggregatorClass = sms.aggregator === 'MDM' ? 'bg-purple-100 text-purple-800' :
-                                            sms.aggregator === 'GNX' ? 'bg-orange-100 text-orange-800' :
-                                            'bg-teal-100 text-teal-800';
+                        sms.aggregator === 'GNX' ? 'bg-orange-100 text-orange-800' :
+                            'bg-teal-100 text-teal-800';
 
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${sms.id}</td>
@@ -298,24 +371,27 @@
                 nextBtn.disabled = currentPage >= totalPages;
             };
 
-            // Logika pencarian
+            // Logika pencarian dan filter
             const searchIdInput = document.getElementById('search-id-input');
             const searchNumberInput = document.getElementById('search-number-input');
             const aggregatorFilterSelect = document.getElementById('aggregator-filter-select');
+            const statusFilterSelect = document.getElementById('status-filter-select'); // Dapatkan elemen filter status baru
 
             const filterTable = () => {
                 const searchId = searchIdInput.value.toLowerCase();
                 const searchNumber = searchNumberInput.value.toLowerCase();
                 const aggregatorFilter = aggregatorFilterSelect.value;
+                const statusFilter = statusFilterSelect.value; // Dapatkan nilai filter status
 
                 // Filter data berdasarkan semua input
                 filteredTableData = mockTableData.filter(item => {
                     const idMatch = item.id.toLowerCase().includes(searchId);
                     const numberMatch = item.number.toLowerCase().includes(searchNumber);
                     const aggregatorMatch = aggregatorFilter === 'all' || item.aggregator === aggregatorFilter;
-                    return idMatch && numberMatch && aggregatorMatch;
+                    const statusMatch = statusFilter === 'all' || item.statusDR.toLowerCase() === statusFilter.toLowerCase();
+                    return idMatch && numberMatch && aggregatorMatch && statusMatch; // Tambahkan filter status
                 });
-                
+
                 // Reset ke halaman pertama dan render ulang tabel dan pagination
                 currentPage = 1;
                 renderTable(currentPage);
@@ -326,6 +402,7 @@
             searchIdInput.addEventListener('input', filterTable);
             searchNumberInput.addEventListener('input', filterTable);
             aggregatorFilterSelect.addEventListener('change', filterTable);
+            statusFilterSelect.addEventListener('change', filterTable); // Tambahkan event listener untuk filter status
 
             // Mengisi data ringkasan statistik
             const getSummaryData = (data) => {
@@ -333,8 +410,9 @@
                 let sukses = data.filter(s => s.statusDR === 'SUKSES').length;
                 let failed = data.filter(s => s.statusDR === 'FAILED').length;
                 let rejected = data.filter(s => s.statusDR === 'REJECT').length;
+                let pending = data.filter(s => s.statusDR === 'PENDING').length; // Tambah pending
                 let acknowledged = data.filter(s => s.statusACK === 'ACKNOWLEDGED').length;
-                
+
                 // Hitung rata-rata waktu respons untuk DR yang sukses, failed, dan reject
                 let measurableDRs = data.filter(s => s.statusDR !== 'PENDING');
                 let totalResponseTime = measurableDRs.reduce((sum, current) => {
@@ -342,23 +420,25 @@
                     return isNaN(time) ? sum : sum + time;
                 }, 0);
                 let avgResponseTime = measurableDRs.length > 0 ? (totalResponseTime / measurableDRs.length).toFixed(2) : 0;
-                
+
                 return {
                     totalSms,
                     sukses,
                     failed,
                     rejected,
+                    pending, // Tambah pending
                     acknowledged,
                     avgAckResponseTime: avgResponseTime + 's'
                 };
             };
-            
+
             const summaryData = getSummaryData(mockTableData);
 
             document.getElementById('total-sms').textContent = summaryData.totalSms.toLocaleString();
             document.getElementById('sukses-sms').textContent = summaryData.sukses.toLocaleString();
             document.getElementById('failed-sms').textContent = summaryData.failed.toLocaleString();
             document.getElementById('rejected-sms').textContent = summaryData.rejected.toLocaleString();
+            document.getElementById('pending-sms').textContent = summaryData.pending.toLocaleString(); // Tampilkan pending
             document.getElementById('acknowledged-ack').textContent = summaryData.acknowledged.toLocaleString();
             document.getElementById('avg-ack-response-time').textContent = summaryData.avgAckResponseTime;
 
@@ -453,7 +533,7 @@
 
                 const value = parseFloat(document.getElementById('time-range-select').value);
                 const rawChartData = generateMockChartData(value);
-                
+
                 let datasets = [];
                 let labels = rawChartData.map(d => d.time);
                 let yAxisTitle = 'Jumlah SMS';
@@ -537,7 +617,7 @@
             // Logika tombol dan dropdown
             const aggregatorButtons = document.querySelectorAll('.aggregator-btn');
             const timeRangeSelect = document.getElementById('time-range-select');
-            
+
             // Fungsi pembantu untuk mengelola kelas tombol
             const setButtonActive = (button) => {
                 const allButtons = [drBtn, ackBtn, ackResponseTimeBtn];
@@ -587,7 +667,7 @@
                 renderChart();
                 updateChartTime(); // Perbarui waktu saat rentang waktu diubah
             });
-            
+
             // Logika pagination
             document.getElementById('prev-page-btn').addEventListener('click', () => {
                 if (currentPage > 1) {
@@ -632,4 +712,5 @@
         });
     </script>
 </body>
+
 </html>
