@@ -83,15 +83,16 @@
             </div>
             <p id="acknowledged-ack" class="text-4xl font-extrabold"></p>
         </div>
-        <!-- Stat Card 6: ACK Not Acknowledged -->
+        <!-- Stat Card 6: Average ACK Response Time -->
         <div class="flex flex-col items-start justify-center p-6 rounded-2xl shadow-xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02] bg-yellow-50 text-yellow-600">
             <div class="flex items-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8 text-yellow-600">
-                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor" class="h-8 w-8 text-yellow-600" stroke="white" stroke-width="5">
+                    <circle cx="50" cy="50" r="40"/>
+  <path d="M50 25V50 H75" />
                 </svg>
-                <p class="text-xl font-semibold">Not Acknowledged</p>
+                <p class="text-xl font-semibold">Avg. Resp. Time</p>
             </div>
-            <p id="not-acknowledged-ack" class="text-4xl font-extrabold"></p>
+            <p id="avg-ack-response-time" class="text-4xl font-extrabold"></p>
         </div>
     </section>
 
@@ -105,6 +106,9 @@
                 </button>
                 <button id="ack-chart-btn" class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
                     Status ACK
+                </button>
+                <button id="ack-response-time-btn" class="py-2 px-5 rounded-lg transition-all duration-300 text-gray-600 hover:bg-white">
+                    Respons ACK
                 </button>
             </div>
             
@@ -166,11 +170,10 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message ID</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MSISDN</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status ACK DR</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu ACK</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status DR</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu DR</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agregator</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status ACK DR</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Respons DR</th>
                     </tr>
                 </thead>
                 <tbody id="sms-table-body" class="bg-white divide-y divide-gray-200">
@@ -196,48 +199,38 @@
     <!-- JavaScript untuk logika dinamis -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Data dummy
-            const mockSummaryData = {
-                totalSms: 15456,
-                sukses: 14890,
-                failed: 212,
-                rejected: 150,
-                acknowledged: 14500,
-                notAcknowledged: 390,
-            };
+            // Fungsi untuk menghasilkan waktu respons secara acak
+            const generateResponseTime = () => (Math.random() * 5).toFixed(2); // Waktu dalam detik, 0-5 detik
 
             // Fungsi untuk menghasilkan data dummy tabel yang lebih banyak dengan logika baru
             const generateMockTableData = (count) => {
                 const data = [];
                 const now = new Date();
                 const aggregators = ['MDM', 'GNX', 'MKA'];
+                const drStatusOptions = ['SUKSES', 'FAILED', 'REJECT', 'PENDING'];
+
                 for (let i = 0; i < count; i++) {
-                    const time = new Date(now.getTime() - i * 15 * 60 * 1000);
+                    const statusDR = drStatusOptions[Math.floor(Math.random() * drStatusOptions.length)];
                     let statusACK;
-                    let statusDR;
+                    let responseTime;
 
-                    // Tentukan status ACK secara acak terlebih dahulu
-                    const ackStatusOptions = ['ACKNOWLEDGED', 'NOT ACKNOWLEDGED', 'N/A'];
-                    statusACK = ackStatusOptions[Math.floor(Math.random() * ackStatusOptions.length)];
-
-                    // Tetapkan status DR berdasarkan status ACK
-                    if (statusACK === 'N/A') {
-                        statusDR = 'FAILED';
-                    } else if (statusACK === 'NOT ACKNOWLEDGED') {
-                        statusDR = 'PENDING';
-                    } else if (statusACK === 'ACKNOWLEDGED') {
-                        // Jika ACKNOWLEDGED, tentukan Status DR secara acak antara Sukses atau Reject
-                        statusDR = Math.random() > 0.5 ? 'SUKSES' : 'REJECT';
+                    // Tentukan status ACK dan Waktu Respons berdasarkan status DR
+                    if (statusDR === 'PENDING') {
+                        statusACK = 'N/A';
+                        responseTime = 'N/A';
+                    } else { // SUKSES, FAILED, REJECT
+                        statusACK = 'ACKNOWLEDGED';
+                        // Sesuai permintaan: hanya PENDING yang N/A. SUKSES, FAILED, dan REJECT memiliki waktu respons.
+                        responseTime = `${generateResponseTime()}s`;
                     }
-
+                    
                     data.push({
                         id: `RPT${123456789 + i}`,
                         number: `0812345678${90 + i}`,
                         statusDR: statusDR,
-                        timeDR: (statusDR === 'PENDING') ? 'N/A' : time.toLocaleString('id-ID', { hour12: false }),
                         statusACK: statusACK,
-                        timeACK: statusACK === 'N/A' ? 'N/A' : new Date(time.getTime() + 1 * 60 * 1000).toLocaleString('id-ID', { hour12: false }),
-                        aggregator: aggregators[Math.floor(Math.random() * aggregators.length)]
+                        aggregator: aggregators[Math.floor(Math.random() * aggregators.length)],
+                        responseTime: responseTime
                     });
                 }
                 return data;
@@ -249,8 +242,7 @@
             let currentPage = 1;
             const rowsPerPage = 10;
             let filteredTableData = [...mockTableData]; // Salinan data yang akan difilter
-            let currentAggregatorFilter = 'all';
-
+            
             // Fungsi untuk merender tabel
             const renderTable = (page) => {
                 const tableBody = document.getElementById('sms-table-body');
@@ -264,12 +256,12 @@
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-50 transition-colors duration-100';
 
-                    // Mengubah kelas untuk status SUKSES
+                    // Mengubah kelas untuk status DR dan ACK
                     const statusDrClass = sms.statusDR === 'SUKSES' ? 'bg-green-100 text-green-800' :
                                              sms.statusDR === 'FAILED' ? 'bg-red-100 text-red-800' :
                                              sms.statusDR === 'REJECT' ? 'bg-gray-300 text-gray-800' : 'bg-yellow-100 text-yellow-800';
                     const statusAckClass = sms.statusACK === 'ACKNOWLEDGED' ? 'bg-blue-100 text-blue-800' :
-                                               sms.statusACK === 'NOT ACKNOWLEDGED' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800';
+                                               'bg-gray-100 text-gray-800';
                     const aggregatorClass = sms.aggregator === 'MDM' ? 'bg-purple-100 text-purple-800' :
                                             sms.aggregator === 'GNX' ? 'bg-orange-100 text-orange-800' :
                                             'bg-teal-100 text-teal-800';
@@ -278,16 +270,15 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${sms.id}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${sms.number}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusAckClass}">${sms.statusACK}</span>
+                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${aggregatorClass}">${sms.aggregator}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${sms.timeACK}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusDrClass}">${sms.statusDR}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${sms.timeDR}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${aggregatorClass}">${sms.aggregator}</span>
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusAckClass}">${sms.statusACK}</span>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${sms.responseTime}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -337,145 +328,109 @@
             aggregatorFilterSelect.addEventListener('change', filterTable);
 
             // Mengisi data ringkasan statistik
-            document.getElementById('total-sms').textContent = mockSummaryData.totalSms.toLocaleString();
-            document.getElementById('sukses-sms').textContent = mockSummaryData.sukses.toLocaleString();
-            document.getElementById('failed-sms').textContent = mockSummaryData.failed.toLocaleString();
-            document.getElementById('rejected-sms').textContent = mockSummaryData.rejected.toLocaleString();
-            document.getElementById('acknowledged-ack').textContent = mockSummaryData.acknowledged.toLocaleString();
-            document.getElementById('not-acknowledged-ack').textContent = mockSummaryData.notAcknowledged.toLocaleString();
-
-            // Fungsi untuk menghasilkan data dummy grafik berdasarkan jumlah jam (dengan granularitas per jam)
-            const generateMockChartDataByHours = (hours) => {
-                const data = [];
-                const now = new Date();
-                const startOfPeriod = new Date(now.getTime() - hours * 60 * 60 * 1000); // Mulai dari X jam yang lalu
-                for (let i = 0; i < hours; i++) {
-                    const time = new Date(startOfPeriod.getTime() + i * 60 * 60 * 1000);
-                    const hour = time.getHours();
-                    const minute = time.getMinutes();
-                    const seconds = time.getSeconds();
-
-                    const suksesMDM = Math.floor(Math.random() * 50) + 10;
-                    const failedMDM = Math.floor(Math.random() * 5);
-                    const rejectedMDM = Math.floor(Math.random() * 3);
-                    const pendingDRMDM = Math.floor(Math.random() * 10);
-                    const acknowledgedMDM = Math.floor(suksesMDM * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedMDM = suksesMDM - acknowledgedMDM;
-
-                    const suksesGNX = Math.floor(Math.random() * 50) + 10;
-                    const failedGNX = Math.floor(Math.random() * 5);
-                    const rejectedGNX = Math.floor(Math.random() * 3);
-                    const pendingDRGNX = Math.floor(Math.random() * 10);
-                    const acknowledgedGNX = Math.floor(suksesGNX * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedGNX = suksesGNX - acknowledgedGNX;
-
-                    const suksesMKA = Math.floor(Math.random() * 50) + 10;
-                    const failedMKA = Math.floor(Math.random() * 5);
-                    const rejectedMKA = Math.floor(Math.random() * 3);
-                    const pendingDRMKA = Math.floor(Math.random() * 10);
-                    const acknowledgedMKA = Math.floor(suksesMKA * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedMKA = suksesMKA - acknowledgedMKA;
-
-                    data.push({
-                        time: `${String(hour).padStart(2, '0')}:00`,
-                        sukses: suksesMDM + suksesGNX + suksesMKA,
-                        failed: failedMDM + failedGNX + failedMKA,
-                        rejected: rejectedMDM + rejectedGNX + rejectedMKA,
-                        pendingDR: pendingDRMDM + pendingDRGNX + pendingDRMKA,
-                        acknowledged: acknowledgedMDM + acknowledgedGNX + acknowledgedMKA,
-                        notAcknowledged: notAcknowledgedMDM + notAcknowledgedGNX + notAcknowledgedMKA,
-                        MDM: {
-                            sukses: suksesMDM,
-                            failed: failedMDM,
-                            rejected: rejectedMDM,
-                            pendingDR: pendingDRMDM,
-                            acknowledged: acknowledgedMDM,
-                            notAcknowledged: notAcknowledgedMDM
-                        },
-                        GNX: {
-                            sukses: suksesGNX,
-                            failed: failedGNX,
-                            rejected: rejectedGNX,
-                            pendingDR: pendingDRGNX,
-                            acknowledged: acknowledgedGNX,
-                            notAcknowledged: notAcknowledgedGNX
-                        },
-                        MKA: {
-                            sukses: suksesMKA,
-                            failed: failedMKA,
-                            rejected: rejectedMKA,
-                            pendingDR: pendingDRMKA,
-                            acknowledged: acknowledgedMKA,
-                            notAcknowledged: notAcknowledgedMKA
-                        }
-                    });
-                }
-                return data;
+            const getSummaryData = (data) => {
+                let totalSms = data.length;
+                let sukses = data.filter(s => s.statusDR === 'SUKSES').length;
+                let failed = data.filter(s => s.statusDR === 'FAILED').length;
+                let rejected = data.filter(s => s.statusDR === 'REJECT').length;
+                let acknowledged = data.filter(s => s.statusACK === 'ACKNOWLEDGED').length;
+                
+                // Hitung rata-rata waktu respons untuk DR yang sukses, failed, dan reject
+                let measurableDRs = data.filter(s => s.statusDR !== 'PENDING');
+                let totalResponseTime = measurableDRs.reduce((sum, current) => {
+                    const time = parseFloat(current.responseTime);
+                    return isNaN(time) ? sum : sum + time;
+                }, 0);
+                let avgResponseTime = measurableDRs.length > 0 ? (totalResponseTime / measurableDRs.length).toFixed(2) : 0;
+                
+                return {
+                    totalSms,
+                    sukses,
+                    failed,
+                    rejected,
+                    acknowledged,
+                    avgAckResponseTime: avgResponseTime + 's'
+                };
             };
+            
+            const summaryData = getSummaryData(mockTableData);
 
-            // Fungsi untuk menghasilkan data dummy grafik berdasarkan jumlah menit (dengan granularitas per 1 menit)
-            const generateMockChartDataByMinutes = (minutes) => {
+            document.getElementById('total-sms').textContent = summaryData.totalSms.toLocaleString();
+            document.getElementById('sukses-sms').textContent = summaryData.sukses.toLocaleString();
+            document.getElementById('failed-sms').textContent = summaryData.failed.toLocaleString();
+            document.getElementById('rejected-sms').textContent = summaryData.rejected.toLocaleString();
+            document.getElementById('acknowledged-ack').textContent = summaryData.acknowledged.toLocaleString();
+            document.getElementById('avg-ack-response-time').textContent = summaryData.avgAckResponseTime;
+
+            // Fungsi untuk menghasilkan data dummy grafik per menit
+            const generateMockChartData = (hours) => {
                 const data = [];
                 const now = new Date();
-                const startOfPeriod = new Date(now.getTime() - minutes * 60 * 1000); // Mulai dari X menit yang lalu
-                const step = 1; // Granularitas per 1 menit
-                for (let i = 0; i < minutes; i += step) {
-                    const time = new Date(startOfPeriod.getTime() + i * 60 * 1000);
-                    const hour = String(time.getHours()).padStart(2, '0');
-                    const minute = String(time.getMinutes()).padStart(2, '0');
+                const totalMinutes = hours * 60;
+                const aggregators = ['MDM', 'GNX', 'MKA'];
 
-                    const suksesMDM = Math.floor(Math.random() * 10) + 5;
+                for (let i = 0; i < totalMinutes; i++) {
+                    const time = new Date(now.getTime() - (totalMinutes - i) * 60 * 1000);
+                    const timeString = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+
+                    // Generate DR and ACK data per menit
+                    const suksesMDM = Math.floor(Math.random() * 5);
                     const failedMDM = Math.floor(Math.random() * 2);
                     const rejectedMDM = Math.floor(Math.random() * 1);
                     const pendingDRMDM = Math.floor(Math.random() * 3);
-                    const acknowledgedMDM = Math.floor(suksesMDM * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedMDM = suksesMDM - acknowledgedMDM;
+                    const acknowledgedMDM = suksesMDM + failedMDM + rejectedMDM;
+                    const avgResponseTimeMDM = (Math.random() * 1.5 + 0.5).toFixed(2);
 
-                    const suksesGNX = Math.floor(Math.random() * 10) + 5;
+                    const suksesGNX = Math.floor(Math.random() * 5);
                     const failedGNX = Math.floor(Math.random() * 2);
                     const rejectedGNX = Math.floor(Math.random() * 1);
                     const pendingDRGNX = Math.floor(Math.random() * 3);
-                    const acknowledgedGNX = Math.floor(suksesGNX * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedGNX = suksesGNX - acknowledgedGNX;
+                    const acknowledgedGNX = suksesGNX + failedGNX + rejectedGNX;
+                    const avgResponseTimeGNX = (Math.random() * 1.5 + 0.5).toFixed(2);
 
-                    const suksesMKA = Math.floor(Math.random() * 10) + 5;
+                    const suksesMKA = Math.floor(Math.random() * 5);
                     const failedMKA = Math.floor(Math.random() * 2);
                     const rejectedMKA = Math.floor(Math.random() * 1);
                     const pendingDRMKA = Math.floor(Math.random() * 3);
-                    const acknowledgedMKA = Math.floor(suksesMKA * (0.8 + Math.random() * 0.2));
-                    const notAcknowledgedMKA = suksesMKA - acknowledgedMKA;
+                    const acknowledgedMKA = suksesMKA + failedMKA + rejectedMKA;
+                    const avgResponseTimeMKA = (Math.random() * 1.5 + 0.5).toFixed(2);
+
+                    // Calculate overall averages for 'all' aggregator
+                    const totalSuccessful = suksesMDM + suksesGNX + suksesMKA + failedMDM + failedGNX + failedMKA + rejectedMDM + rejectedGNX + rejectedMKA;
+                    const totalResponseTimeAll = (parseFloat(avgResponseTimeMDM) * (suksesMDM + failedMDM + rejectedMDM) + parseFloat(avgResponseTimeGNX) * (suksesGNX + failedGNX + rejectedGNX) + parseFloat(avgResponseTimeMKA) * (suksesMKA + failedMKA + rejectedMKA));
+                    const avgResponseTimeAll = totalSuccessful > 0 ? (totalResponseTimeAll / totalSuccessful).toFixed(2) : 0;
 
                     data.push({
-                        time: `${hour}:${minute}`,
+                        time: timeString,
                         sukses: suksesMDM + suksesGNX + suksesMKA,
                         failed: failedMDM + failedGNX + failedMKA,
                         rejected: rejectedMDM + rejectedGNX + rejectedMKA,
                         pendingDR: pendingDRMDM + pendingDRGNX + pendingDRMKA,
                         acknowledged: acknowledgedMDM + acknowledgedGNX + acknowledgedMKA,
-                        notAcknowledged: notAcknowledgedMDM + notAcknowledgedGNX + notAcknowledgedMKA,
+                        avgResponseTime: avgResponseTimeAll,
                         MDM: {
                             sukses: suksesMDM,
                             failed: failedMDM,
                             rejected: rejectedMDM,
                             pendingDR: pendingDRMDM,
-                            acknowledged: acknowledgedMDM,
-                            notAcknowledged: notAcknowledgedMDM
+                            acknowledged: suksesMDM + failedMDM + rejectedMDM,
+                            avgResponseTime: avgResponseTimeMDM
                         },
                         GNX: {
                             sukses: suksesGNX,
                             failed: failedGNX,
                             rejected: rejectedGNX,
                             pendingDR: pendingDRGNX,
-                            acknowledged: acknowledgedGNX,
-                            notAcknowledged: notAcknowledgedGNX
+                            acknowledged: suksesGNX + failedGNX + rejectedGNX,
+                            avgResponseTime: avgResponseTimeGNX
                         },
                         MKA: {
                             sukses: suksesMKA,
                             failed: failedMKA,
                             rejected: rejectedMKA,
                             pendingDR: pendingDRMKA,
-                            acknowledged: acknowledgedMKA,
-                            notAcknowledged: notAcknowledgedMKA
+                            acknowledged: suksesMKA + failedMKA + rejectedMKA,
+                            avgResponseTime: avgResponseTimeMKA
                         }
                     });
                 }
@@ -487,23 +442,22 @@
             let activeChartType = 'dr';
             let activeAggregatorFilter = 'all'; // Filter agregator default
             const ctx = document.getElementById('sms-line-chart').getContext('2d');
+            const drBtn = document.getElementById('dr-chart-btn');
+            const ackBtn = document.getElementById('ack-chart-btn');
+            const ackResponseTimeBtn = document.getElementById('ack-response-time-btn');
 
             const renderChart = () => {
-                // Hancurkan instance chart yang ada jika ada
                 if (chartInstance) {
                     chartInstance.destroy();
                 }
 
                 const value = parseFloat(document.getElementById('time-range-select').value);
-                let rawChartData;
-                if (value === 24) {
-                    rawChartData = generateMockChartDataByHours(24);
-                } else {
-                    const minutes = value * 60;
-                    rawChartData = generateMockChartDataByMinutes(minutes);
-                }
+                const rawChartData = generateMockChartData(value);
                 
                 let datasets = [];
+                let labels = rawChartData.map(d => d.time);
+                let yAxisTitle = 'Jumlah SMS';
+
                 if (activeChartType === 'dr') {
                     if (activeAggregatorFilter === 'all') {
                         datasets = [
@@ -521,15 +475,25 @@
                         ];
                     }
                 } else if (activeChartType === 'ack') {
+                    yAxisTitle = 'Jumlah SMS';
                     if (activeAggregatorFilter === 'all') {
                         datasets = [
                             { label: 'Acknowledged', data: rawChartData.map(d => d.acknowledged), borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                            { label: 'Not Acknowledged', data: rawChartData.map(d => d.notAcknowledged), borderColor: '#FCA5A5', backgroundColor: 'rgba(252, 165, 165, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
                         ];
                     } else {
                         datasets = [
                             { label: 'Acknowledged', data: rawChartData.map(d => d[activeAggregatorFilter].acknowledged), borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
-                            { label: 'Not Acknowledged', data: rawChartData.map(d => d[activeAggregatorFilter].notAcknowledged), borderColor: '#FCA5A5', backgroundColor: 'rgba(252, 165, 165, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    }
+                } else if (activeChartType === 'ack-response-time') {
+                    yAxisTitle = 'Waktu (detik)';
+                    if (activeAggregatorFilter === 'all') {
+                        datasets = [
+                            { label: 'Rata-rata Waktu Respons DR', data: rawChartData.map(d => d.avgResponseTime), borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
+                        ];
+                    } else {
+                        datasets = [
+                            { label: 'Rata-rata Waktu Respons DR', data: rawChartData.map(d => d[activeAggregatorFilter].avgResponseTime), borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.2)', borderWidth: 3, fill: false, tension: 0.4 },
                         ];
                     }
                 }
@@ -537,7 +501,7 @@
                 chartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: rawChartData.map(d => d.time),
+                        labels: labels,
                         datasets: datasets
                     },
                     options: {
@@ -559,7 +523,11 @@
                                 }
                             },
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: yAxisTitle
+                                }
                             }
                         }
                     }
@@ -567,27 +535,39 @@
             };
 
             // Logika tombol dan dropdown
-            const drBtn = document.getElementById('dr-chart-btn');
-            const ackBtn = document.getElementById('ack-chart-btn');
             const aggregatorButtons = document.querySelectorAll('.aggregator-btn');
             const timeRangeSelect = document.getElementById('time-range-select');
+            
+            // Fungsi pembantu untuk mengelola kelas tombol
+            const setButtonActive = (button) => {
+                const allButtons = [drBtn, ackBtn, ackResponseTimeBtn];
+                allButtons.forEach(btn => {
+                    if (btn === button) {
+                        btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                        btn.classList.remove('text-gray-600', 'hover:bg-white');
+                    } else {
+                        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                        btn.classList.add('text-gray-600', 'hover:bg-white');
+                    }
+                });
+            };
 
             drBtn.addEventListener('click', () => {
                 activeChartType = 'dr';
                 renderChart();
-                drBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
-                drBtn.classList.remove('text-gray-600', 'hover:bg-white');
-                ackBtn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
-                ackBtn.classList.add('text-gray-600', 'hover:bg-white');
+                setButtonActive(drBtn);
             });
 
             ackBtn.addEventListener('click', () => {
                 activeChartType = 'ack';
                 renderChart();
-                ackBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
-                ackBtn.classList.remove('text-gray-600', 'hover:bg-white');
-                drBtn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
-                drBtn.classList.add('text-gray-600', 'hover:bg-white');
+                setButtonActive(ackBtn);
+            });
+
+            ackResponseTimeBtn.addEventListener('click', () => {
+                activeChartType = 'ack-response-time';
+                renderChart();
+                setButtonActive(ackResponseTimeBtn);
             });
 
             aggregatorButtons.forEach(button => {
