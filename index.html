@@ -17,12 +17,6 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
-    <!-- Refresh Page setiap 10 Detik -->
-    <script>
-        setInterval(function(){
-            location.reload();
-        }, 10000);
-    </script>
 </head>
 
 <body class="bg-gray-50 p-4 md:p-8 text-gray-800">
@@ -35,10 +29,20 @@
                 class="h-12">
             <h1 class="text-3xl md:text-4xl font-extrabold">SMS Notifikasi Satkomindo</h1>
         </div>
-        <!-- Kontainer waktu terakhir diperbarui di sisi kanan -->
-        <div class="text-right text-gray-500 text-sm">
-            <p class="font-semibold">Terakhir diperbarui:</p>
-            <p id="last-updated-time"></p>
+        <!-- Kontainer waktu terakhir diperbarui dan dropdown refresh di sisi kanan -->
+        <div class="flex items-center space-x-4">
+            <div class="text-right text-gray-500 text-sm">
+                <p class="font-semibold">Terakhir diperbarui:</p>
+                <p id="last-updated-time"></p>
+            </div>
+            <!-- Dropdown Refresh Interval -->
+            <select id="refresh-interval-select"
+                class="py-2 px-3 rounded-lg text-gray-800 bg-white shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <option value="off">Off</option>
+                <option value="10">10s</option>
+                <option value="30">30s</option>
+                <option value="60">1m</option>
+            </select>
         </div>
     </header>
 
@@ -438,15 +442,25 @@
                 };
             };
 
-            const summaryData = getSummaryData(mockTableData);
+            // Fungsi untuk memperbarui semua data di dasbor
+            const updateDashboardData = () => {
+                const summaryData = getSummaryData(mockTableData);
 
-            document.getElementById('total-sms').textContent = summaryData.totalSms.toLocaleString();
-            document.getElementById('sukses-sms').textContent = summaryData.sukses.toLocaleString();
-            document.getElementById('failed-sms').textContent = summaryData.failed.toLocaleString();
-            document.getElementById('rejected-sms').textContent = summaryData.rejected.toLocaleString();
-            document.getElementById('pending-sms').textContent = summaryData.pending.toLocaleString(); // Tampilkan pending
-            document.getElementById('acknowledged-ack').textContent = summaryData.acknowledged.toLocaleString();
-            document.getElementById('avg-ack-response-time').textContent = summaryData.avgAckResponseTime;
+                document.getElementById('total-sms').textContent = summaryData.totalSms.toLocaleString();
+                document.getElementById('sukses-sms').textContent = summaryData.sukses.toLocaleString();
+                document.getElementById('failed-sms').textContent = summaryData.failed.toLocaleString();
+                document.getElementById('rejected-sms').textContent = summaryData.rejected.toLocaleString();
+                document.getElementById('pending-sms').textContent = summaryData.pending.toLocaleString(); // Tampilkan pending
+                document.getElementById('acknowledged-ack').textContent = summaryData.acknowledged.toLocaleString();
+                document.getElementById('avg-ack-response-time').textContent = summaryData.avgAckResponseTime;
+
+                // Perbarui waktu terakhir diperbarui
+                const now = new Date();
+                document.getElementById('last-updated-time').textContent = now.toLocaleString('id-ID');
+
+                renderChart();
+                filterTable();
+            };
 
             // Fungsi untuk menghasilkan data dummy grafik per menit
             const generateMockChartData = (hours) => {
@@ -671,7 +685,28 @@
 
             timeRangeSelect.addEventListener('change', () => {
                 renderChart();
-                updateChartTime(); // Perbarui waktu saat rentang waktu diubah
+            });
+
+            // Logika pembaruan otomatis
+            let refreshInterval = null;
+            const refreshIntervalSelect = document.getElementById('refresh-interval-select');
+
+            const startRefreshInterval = (seconds) => {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                }
+                if (seconds > 0) {
+                    refreshInterval = setInterval(updateDashboardData, seconds * 1000);
+                }
+            };
+
+            refreshIntervalSelect.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                if (selectedValue === 'off') {
+                    startRefreshInterval(0); // Berhenti
+                } else {
+                    startRefreshInterval(parseInt(selectedValue));
+                }
             });
 
             // Logika pagination
@@ -693,28 +728,9 @@
             });
 
             // Tampilkan grafik DR, tabel, dan pagination saat pertama kali halaman dimuat
-            renderChart();
-            filterTable(); // Panggil filterTable untuk merender tabel dan pagination dengan data awal
-
-            // Fungsi untuk memperbarui waktu terakhir diperbarui pada header utama
-            const updateMainHeaderTime = () => {
-                const now = new Date();
-                document.getElementById('last-updated-time').textContent = now.toLocaleString('id-ID');
-            };
-
-            // Fungsi untuk memperbarui waktu terakhir diperbarui pada header grafik
-            const updateChartTime = () => {
-                const now = new Date();
-                // document.getElementById('last-updated-chart-time').textContent = now.toLocaleString('id-ID');
-            };
-
-            // Perbarui waktu saat pertama kali dimuat
-            updateMainHeaderTime();
-            // updateChartTime();
-
-            // Perbarui waktu setiap detik
-            setInterval(updateMainHeaderTime, 1000);
-            // setInterval(updateChartTime, 1000);
+            updateDashboardData(); // Panggil fungsi utama untuk inisialisasi
+            startRefreshInterval(10); // Mulai pembaruan otomatis default (10 detik)
+            refreshIntervalSelect.value = '10'; // Set nilai default pada dropdown
         });
     </script>
 </body>
