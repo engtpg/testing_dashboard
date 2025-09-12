@@ -319,7 +319,7 @@
                 return data;
             };
 
-            const mockTableData = generateMockTableData(50); // Menghasilkan 50 data dummy
+            const mockTableData = generateMockTableData(5000); // Menghasilkan 50 data dummy
 
             // Variabel untuk pagination dan pencarian
             let currentPage = 1;
@@ -474,24 +474,24 @@
                     const timeString = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
 
                     // Generate DR and ACK data per menit
-                    const suksesMDM = Math.floor(Math.random() * 5);
-                    const failedMDM = Math.floor(Math.random() * 2);
-                    const rejectedMDM = Math.floor(Math.random() * 1);
-                    const pendingDRMDM = Math.floor(Math.random() * 3);
+                    const suksesMDM = Math.floor(Math.random() * 500);
+                    const failedMDM = Math.floor(Math.random() * 200);
+                    const rejectedMDM = Math.floor(Math.random() * 100);
+                    const pendingDRMDM = Math.floor(Math.random() * 300);
                     const acknowledgedMDM = suksesMDM + failedMDM + rejectedMDM;
                     const avgResponseTimeMDM = (Math.random() * 1.5 + 0.5).toFixed(2);
 
-                    const suksesGNX = Math.floor(Math.random() * 5);
-                    const failedGNX = Math.floor(Math.random() * 2);
-                    const rejectedGNX = Math.floor(Math.random() * 1);
-                    const pendingDRGNX = Math.floor(Math.random() * 3);
+                    const suksesGNX = Math.floor(Math.random() * 500);
+                    const failedGNX = Math.floor(Math.random() * 200);
+                    const rejectedGNX = Math.floor(Math.random() * 100);
+                    const pendingDRGNX = Math.floor(Math.random() * 300);
                     const acknowledgedGNX = suksesGNX + failedGNX + rejectedGNX;
                     const avgResponseTimeGNX = (Math.random() * 1.5 + 0.5).toFixed(2);
 
-                    const suksesMKA = Math.floor(Math.random() * 5);
-                    const failedMKA = Math.floor(Math.random() * 2);
-                    const rejectedMKA = Math.floor(Math.random() * 1);
-                    const pendingDRMKA = Math.floor(Math.random() * 3);
+                    const suksesMKA = Math.floor(Math.random() * 500);
+                    const failedMKA = Math.floor(Math.random() * 200);
+                    const rejectedMKA = Math.floor(Math.random() * 100);
+                    const pendingDRMKA = Math.floor(Math.random() * 300);
                     const acknowledgedMKA = suksesMKA + failedMKA + rejectedMKA;
                     const avgResponseTimeMKA = (Math.random() * 1.5 + 0.5).toFixed(2);
 
