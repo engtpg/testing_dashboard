@@ -424,7 +424,7 @@
                 let acknowledged = data.filter(s => s.statusACK === 'ACKNOWLEDGED').length;
 
                 // Hitung rata-rata waktu respons untuk DR yang sukses, failed, dan reject
-                let measurableDRs = data.filter(s => s.statusDR !== 'PENDING');
+                let measurableDRs = data.filter(s => s.statusDR !== 'PENDING' && s.responseTime !== 'N/A');
                 let totalResponseTime = measurableDRs.reduce((sum, current) => {
                     const time = parseFloat(current.responseTime);
                     return isNaN(time) ? sum : sum + time;
@@ -463,14 +463,14 @@
             };
 
             // Fungsi untuk menghasilkan data dummy grafik per menit
-            const generateMockChartData = (hours) => {
+            const generateMockChartData = (hours, summaryData) => {
                 const data = [];
                 const now = new Date();
                 const totalMinutes = hours * 60;
                 const aggregators = ['MDM', 'GNX', 'MKA'];
 
-                for (let i = 0; i < totalMinutes; i++) {
-                    const time = new Date(now.getTime() - (totalMinutes - i) * 60 * 1000);
+                for (let i = 0; i < totalMinutes - 1; i++) {
+                    const time = new Date(now.getTime() - (totalMinutes - i - 1) * 60 * 1000);
                     const timeString = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
 
                     // Generate DR and ACK data per menit
@@ -534,6 +534,43 @@
                         }
                     });
                 }
+
+                // Tambahkan data dari ringkasan statistik ke menit terakhir
+                const lastMinute = {
+                    time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+                    sukses: summaryData.sukses,
+                    failed: summaryData.failed,
+                    rejected: summaryData.rejected,
+                    pendingDR: summaryData.pending,
+                    acknowledged: summaryData.acknowledged,
+                    avgResponseTime: parseFloat(summaryData.avgAckResponseTime),
+                    MDM: {
+                        sukses: Math.floor(summaryData.sukses / 3), // Estimasi untuk data dummy
+                        failed: Math.floor(summaryData.failed / 3),
+                        rejected: Math.floor(summaryData.rejected / 3),
+                        pendingDR: Math.floor(summaryData.pending / 3),
+                        acknowledged: Math.floor(summaryData.acknowledged / 3),
+                        avgResponseTime: parseFloat(summaryData.avgAckResponseTime) // Sama untuk semua
+                    },
+                    GNX: {
+                        sukses: Math.floor(summaryData.sukses / 3),
+                        failed: Math.floor(summaryData.failed / 3),
+                        rejected: Math.floor(summaryData.rejected / 3),
+                        pendingDR: Math.floor(summaryData.pending / 3),
+                        acknowledged: Math.floor(summaryData.acknowledged / 3),
+                        avgResponseTime: parseFloat(summaryData.avgAckResponseTime)
+                    },
+                    MKA: {
+                        sukses: summaryData.sukses - Math.floor(summaryData.sukses / 3) * 2, // Sisa
+                        failed: summaryData.failed - Math.floor(summaryData.failed / 3) * 2,
+                        rejected: summaryData.rejected - Math.floor(summaryData.rejected / 3) * 2,
+                        pendingDR: summaryData.pending - Math.floor(summaryData.pending / 3) * 2,
+                        acknowledged: summaryData.acknowledged - Math.floor(summaryData.acknowledged / 3) * 2,
+                        avgResponseTime: parseFloat(summaryData.avgAckResponseTime)
+                    }
+                };
+                data.push(lastMinute);
+
                 return data;
             };
 
@@ -552,7 +589,8 @@
                 }
 
                 const value = parseFloat(document.getElementById('time-range-select').value);
-                const rawChartData = generateMockChartData(value);
+                const summaryData = getSummaryData(mockTableData);
+                const rawChartData = generateMockChartData(value, summaryData);
 
                 let datasets = [];
                 let labels = rawChartData.map(d => d.time);
