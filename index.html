@@ -734,7 +734,9 @@
                     clearInterval(refreshInterval);
                 }
                 if (seconds > 0) {
-                    refreshInterval = setInterval(updateDashboardData, seconds * 1000);
+                    refreshInterval = setInterval(() => {
+                        location.reload(); // refresh halaman
+                    }, seconds * 1000);
                 }
             };
 
